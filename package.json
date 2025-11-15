@@ -1,17 +1,26 @@
 {
-  "name": "nodejs-typescript-boilerplate",
-  "type": "module",
-  "scripts": {
-    "dev": "tsx watch --env-file=.env src/server.ts",
-    "build": "esbuild src/server.ts --bundle --platform=node --packages=external --format=esm --outfile=dist/server.js",
-    "check": "tsc --noEmit",
-    "format": "prettier ./src --write"
-  },
-  "devDependencies": {
-    "@types/node": "^20.19.0",
-    "esbuild": "^0.25.5",
-    "prettier": "3.5.3",
-    "tsx": "^4.19.4",
-    "typescript": "^5.8.3"
-  }
+	"name": "hono-prisma-starter",
+	"type": "module",
+	"scripts": {
+		"dev": "tsx watch --env-file=.env src/server.ts",
+		"build": "esbuild src/server.ts --bundle --platform=node --packages=external --format=esm --outfile=dist/server.js",
+		"check": "tsc --noEmit",
+		"format": "prettier ./src --write",
+		"db:generate": "prisma generate",
+		"db:migrate": "prisma migrate dev --name ${0}",
+		"db:reset": "prisma migrate reset"
+	},
+	"devDependencies": {
+		"@types/node": "^20.19.0",
+		"esbuild": "^0.25.5",
+		"prettier": "3.5.3",
+		"prisma": "^6.19.0",
+		"tsx": "^4.19.4",
+		"typescript": "^5.8.3"
+	},
+	"dependencies": {
+		"@hono/node-server": "^1.19.6",
+		"@prisma/client": "^6.19.0",
+		"hono": "^4.10.6"
+	}
 }

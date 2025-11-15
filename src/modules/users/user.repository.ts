@@ -1,8 +1,10 @@
 import { db } from '@/db';
-import { User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+
+export type UserInsert = Prisma.UserCreateInput;
 
 export class UserRepository {
-	async create(data: Omit<User, 'id'>) {
+	async create(data: UserInsert) {
 		return db.user.create({
 			data: {
 				email: data.email,
@@ -17,5 +19,9 @@ export class UserRepository {
 
 	async findByEmail(email: string) {
 		return db.user.findUnique({ where: { email } });
+	}
+
+	async findById(id: number) {
+		return db.user.findUnique({ where: { id } });
 	}
 }

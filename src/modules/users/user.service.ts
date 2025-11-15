@@ -1,28 +1,31 @@
 import { HTTPException } from 'hono/http-exception';
-import { User } from '@prisma/client';
-import { UserRepository } from '@/modules/users/user.repository';
-
-const userRepository = new UserRepository();
+import { type UserInsert, UserRepository } from './user.repository';
 
 export class UserService {
-	async create(data: Partial<Omit<User, 'id'>>) {
-		if (!data.email || !data.password) {
-			throw new HTTPException(400, { message: 'email and password are required' });
-		}
+	constructor(private repo: UserRepository = new UserRepository()) {}
 
-		const isExists = await userRepository.findByEmail(data.email);
+	async create(data: UserInsert) {
+		const isExists = await this.findByEmail(data.email);
 
 		if (isExists) {
 			throw new HTTPException(409, { message: 'User already exists' });
 		}
 
-		return userRepository.create({
+		return this.repo.create({
 			email: data.email,
 			password: data.password,
 		});
 	}
 
+	async findById(id: number) {
+		return this.repo.findById(id);
+	}
+
+	async findByEmail(email: string) {
+		return this.repo.findByEmail(email);
+	}
+
 	async findAll() {
-		return userRepository.findAll();
+		return this.repo.findAll();
 	}
 }

@@ -1,28 +1,35 @@
 import { Hono } from 'hono';
-import { db } from '@/db';
-import { User } from '@prisma/client';
-import { UserService } from '@/modules/users/user.service';
+import { validator } from 'hono/validator'
 import { HTTPException } from 'hono/http-exception';
+import { UserService } from './user.service';
 
-const userService = new UserService();
+export const userController = (userService: UserService) => {
+	const app = new Hono();
 
-export const userController = new Hono();
+	app.get('/', async c => {
+		const users = await userService.findAll();
+		return c.json(users);
+	});
 
-userController.onError((error, c) => {
-	if (error instanceof HTTPException) {
-		return c.json(error.message, error.status);
-	}
+	app.get('/:id', async c => {
+		const id = c.req.param('id');
+		const user = await userService.findById(Number(id));
+		return c.json(user);
+	});
 
-	return c.text(error.message, 400);
-});
+	app.post('/',
+		validator('json', ({ email, password }) => {
+			if (!email || !password) {
+				throw new HTTPException(400, { message: 'email and password are required' });
+			}
+			return { email, password };
+		}),
+		async c => {
+			const body = c.req.valid('json');
+			const user = await userService.create(body);
+			return c.json(user, 201);
+		}
+	);
 
-userController.get('/', async c => {
-	const users = await userService.findAll();
-	return c.json(users);
-});
-
-userController.post('/', async c => {
-	const body = await c.req.json<Partial<Omit<User, 'id'>>>();
-	const user = await userService.create(body);
-	return c.json(user, 201);
-});
+	return app;
+}

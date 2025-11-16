@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
-import { validator } from 'hono/validator'
-import { HTTPException } from 'hono/http-exception';
 import { UserService } from './user.service';
+import { createUserSchema, getUserSchema } from './user.schema';
+import { zv } from '@/common/middleware/zod.validator';
 
 export const userController = (userService: UserService) => {
 	const app = new Hono();
@@ -11,25 +11,19 @@ export const userController = (userService: UserService) => {
 		return c.json(users);
 	});
 
-	app.get('/:id', async c => {
-		const id = c.req.param('id');
-		const user = await userService.findById(Number(id));
+	app.get('/:id', zv('param', getUserSchema), async c => {
+		const { id } = c.req.valid('param');
+		const user = await userService.findById(id);
+
+		if (!user) return c.notFound();
 		return c.json(user);
 	});
 
-	app.post('/',
-		validator('json', ({ email, password }) => {
-			if (!email || !password) {
-				throw new HTTPException(400, { message: 'email and password are required' });
-			}
-			return { email, password };
-		}),
-		async c => {
-			const body = c.req.valid('json');
-			const user = await userService.create(body);
-			return c.json(user, 201);
-		}
-	);
+	app.post('/', zv('json', createUserSchema), async c => {
+		const body = c.req.valid('json');
+		const user = await userService.create(body);
+		return c.json(user, 201);
+	});
 
 	return app;
 }

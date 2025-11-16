@@ -1,8 +1,8 @@
 import { HTTPException } from 'hono/http-exception';
-import { type UserInsert, UserRepository } from './user.repository';
+import { type UserInsert, type UserRepository } from './user.repository';
 
 export class UserService {
-	constructor(private repo: UserRepository = new UserRepository()) {}
+	constructor(private repo: UserRepository) {}
 
 	async create(data: UserInsert) {
 		const isExists = await this.findByEmail(data.email);

@@ -1,14 +1,12 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { HTTPException } from 'hono/http-exception';
-import { UserService } from '@/modules/users/user.service';
-import { userController } from '@/modules/users/user.controller';
+import { userRouter } from '@/modules/users';
 
 const app = new Hono();
 app.use(logger());
 
-const userService = new UserService();
-app.route('/users', userController(userService));
+app.route('/users', userRouter);
 
 app.onError((err, c) => {
 	if (err instanceof HTTPException) {

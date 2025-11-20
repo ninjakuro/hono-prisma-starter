@@ -24,7 +24,6 @@ model Image {
   width     Int
   height    Int
   filename  String
-  thumbhash String?
   order     Int       @default(0)
 
   @@index([ownerType, ownerId])

@@ -2,7 +2,7 @@ import crypto from 'node:crypto';
 import sharp from 'sharp';
 import { HTTPException } from 'hono/http-exception';
 import { ImageRepository } from './image.repository';
-import { CreateImageInput } from '@/modules/images/image.schema';
+import { type CreateImageInput } from '@/modules/images/image.schema';
 import { deleteFile, getFilePath, writeFile } from '@/common/utils/storage';
 
 export class ImageService {
@@ -22,11 +22,10 @@ export class ImageService {
 		}
 
 		const buffer = Buffer.from(arrayBuffer);
-		const uniqId = crypto.randomBytes(4).toString('hex');
+		const uniqId = crypto.randomBytes(6).toString('hex');
 
-		const filename = `${data.ownerType}-${data.ownerId}_${uniqId}.${format}`;
+		const filename = `${data.ownerType}-${data.ownerId}-${uniqId}.${format}`;
 		const filepath = getFilePath('storage/images', filename);
-		console.log(filepath);
 
 		await writeFile(filepath, buffer);
 

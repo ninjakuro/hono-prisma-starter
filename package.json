@@ -4,28 +4,32 @@
 	"scripts": {
 		"dev": "tsx watch --env-file=.env src/server.ts",
 		"build": "esbuild src/server.ts --bundle --platform=node --packages=external --format=esm --outfile=dist/server.js",
+		"start": "npm run build && node dist/server.js",
 		"check": "tsc --noEmit",
 		"format": "prettier ./src --write",
 		"db:generate": "prisma generate",
 		"db:push": "prisma db push",
 		"db:migrate": "prisma migrate dev --name ${0}",
 		"db:reset": "prisma migrate reset",
+		"db:format": "prisma format",
 		"postinstall": "npm run db:generate"
 	},
 	"devDependencies": {
-		"@types/node": "^24.10.1",
-		"esbuild": "^0.27.0",
-		"prettier": "3.6.2",
-		"prisma": "^6.19.0",
-		"tsx": "^4.20.6",
+		"@types/node": "^24.10.11",
+		"@types/pg": "^8.16.0",
+		"esbuild": "^0.27.3",
+		"prettier": "3.8.1",
+		"tsx": "^4.21.0",
 		"typescript": "^5.9.3"
 	},
 	"dependencies": {
-		"@hono/node-server": "^1.19.6",
-		"@hono/zod-validator": "^0.7.5",
-		"@prisma/client": "^6.19.0",
-		"hono": "^4.10.6",
-		"sharp": "^0.34.5",
-		"zod": "^4.1.12"
+		"@hono/node-server": "^1.19.9",
+		"@hono/zod-validator": "^0.7.6",
+		"@prisma/adapter-pg": "^7.3.0",
+		"@prisma/client": "^7.3.0",
+		"dotenv": "^17.2.4",
+		"hono": "^4.11.8",
+		"prisma": "^7.3.0",
+		"zod": "^4.3.6"
 	}
 }

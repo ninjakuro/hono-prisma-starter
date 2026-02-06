@@ -1,14 +1,12 @@
 import { db } from '@/db';
-import { Prisma } from '@prisma/client';
-
-export type UserInsert = Prisma.UserCreateInput;
+import { UserCreateInput } from '@/db/prisma/models/User';
 
 export class UserRepository {
-	async create(data: UserInsert) {
+	async create(data: UserCreateInput) {
 		return db.user.create({
 			data: {
 				email: data.email,
-				password: data.password,
+				passhash: data.passhash,
 			},
 		});
 	}

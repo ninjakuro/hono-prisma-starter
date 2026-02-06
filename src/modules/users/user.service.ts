@@ -1,10 +1,11 @@
 import { HTTPException } from 'hono/http-exception';
-import { type UserInsert, type UserRepository } from './user.repository';
+import { type UserRepository } from './user.repository';
+import { UserCreateInput } from '@/db/prisma/models/User';
 
 export class UserService {
 	constructor(private repo: UserRepository) {}
 
-	async create(data: UserInsert) {
+	async create(data: UserCreateInput) {
 		const isExists = await this.findByEmail(data.email);
 
 		if (isExists) {
@@ -13,7 +14,7 @@ export class UserService {
 
 		return this.repo.create({
 			email: data.email,
-			password: data.password,
+			passhash: data.passhash,
 		});
 	}
 
